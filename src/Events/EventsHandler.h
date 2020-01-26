@@ -304,7 +304,7 @@ public:
 					int moduleVer = moduleVerFunction();
 					if (moduleVer == MODULE_API_VERSION) {
 						std::cout << "Loading module " << data.cFileName << "..." << std::endl;
-						((void (*)(void *, void *, void *, void *, void *, void*, void*)) dlsym(handle, "ModuleExecuteSetup"))((void*)moduleRegisterEvent, (void*)moduleRegisterEventGuard, (void*)moduleRegisterFunction, (void*)module_create_event_self, (void*)module_create_event_global, (void*)module_create_event_self_and_global, (void*)module_call_function);
+						((void (*)(void *, void *, void *, void *, void *, void*, void*)) GetProcAddress(handle, "ModuleExecuteSetup"))((void*)moduleRegisterEvent, (void*)moduleRegisterEventGuard, (void*)moduleRegisterFunction, (void*)module_create_event_self, (void*)module_create_event_global, (void*)module_create_event_self_and_global, (void*)module_call_function);
 					} else {
 						std::cout << "Module " << data.cFileName << " (" << moduleVer <<") have different API version than server (" << MODULE_API_VERSION << ")." << std::endl;
 					}
