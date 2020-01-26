@@ -256,8 +256,7 @@ public:
 };
 
 #include <iostream>
-#include <dirent.h>
-#include <dlfcn.h>
+ 
 
 namespace ModulesLoaderUtils {
 	bool hasEnding(std::string const &fullString, std::string const &ending);
@@ -275,7 +274,10 @@ void module_create_event_self_and_global(void* ptr, char* name, uint8_t* data, l
 uint8_t* module_call_function(void* eventGeneratorPtr, char* name, uint8_t* data, char* serverName, void* serverPtr, uint8_t** memPtr);
 
 #ifdef _WIN32 
-#include <windows.h>
+#include <windows.h> 
+#else
+#include <dirent.h>
+#include <dlfcn.h>
 #endif
 
 class ModulesLoader {
