@@ -274,22 +274,22 @@ void module_create_event_global(void* ptr, char* name, uint8_t* data, long long 
 void module_create_event_self_and_global(void* ptr, char* name, uint8_t* data, long long int msTime);
 uint8_t* module_call_function(void* eventGeneratorPtr, char* name, uint8_t* data, char* serverName, void* serverPtr, uint8_t** memPtr);
 
-#ifdef __WIN32__
+#ifdef _WIN32 
 #include <windows.h>
 #endif
 
 class ModulesLoader {
 public:
 	void execute() {
-#ifdef __WIN32__
+#ifdef _WIN32 
 		HANDLE hFind;
 		WIN32_FIND_DATA data;
 
-		hFind = FindFirstFile("./modules/", &data);
+		hFind = FindFirstFile(".\\modules\\*", &data);
 		if (hFind != INVALID_HANDLE_VALUE) {
 			do {
 				if (ModulesLoaderUtils::hasEnding(data.cFileName, ".dll")) {
-					std::string totalPath = "./modules/";
+					std::string totalPath = "modules\\";
 					totalPath += data.cFileName;
 					HINSTANCE handle = LoadLibrary(totalPath);
 					if(handle == NULL) {
