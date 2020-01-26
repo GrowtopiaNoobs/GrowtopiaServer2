@@ -285,11 +285,11 @@ public:
 		HANDLE hFind;
 		WIN32_FIND_DATA data;
 
-		hFind = FindFirstFile(".\\modules\\*", &data);
+		hFind = FindFirstFile("./modules/*", &data);
 		if (hFind != INVALID_HANDLE_VALUE) {
 			do {
 				if (ModulesLoaderUtils::hasEnding(data.cFileName, ".dll")) {
-					std::string totalPath = "modules\\";
+					std::string totalPath = "./modules/";
 					totalPath += data.cFileName;
 					HINSTANCE handle = LoadLibrary(totalPath);
 					if(handle == NULL) {
