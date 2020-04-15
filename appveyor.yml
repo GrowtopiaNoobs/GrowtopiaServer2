@@ -1,9 +1,25 @@
 version: 1.0.{build}
 image:
 - ubuntu1804
+- Visual Studio 2019
 
-build_script:
-- sh build.sh
+for:
+-
+  matrix:
+    only:
+      - image: ubuntu1804
+
+  build_script:
+  - sh build.sh
+
+for:
+-
+  matrix:
+    only:
+      - image: Visual Studio 2019
+
+  build_script:
+  - build.bat
 
 artifacts:
 - path: bin
