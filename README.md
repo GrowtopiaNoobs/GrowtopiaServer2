@@ -1,4 +1,4 @@
-# Growtopia Server 2
+# Growtopia Server 2 [![Build status](https://ci.appveyor.com/api/projects/status/9ofy5h4f4xhoncip?svg=true)](https://ci.appveyor.com/project/GrowtopiaNoobs/growtopiaserver2)
 
 This code has been tested to compile under Ubuntu 18.04 with CLion 19.3. Windows build should work with Visual Studio, but it isn't tested.
 
