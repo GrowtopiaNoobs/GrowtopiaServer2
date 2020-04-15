@@ -2,4 +2,5 @@ git submodule update --init --recursive
 mkdir build
 cd build
 cmake ..
-msbuild
+dir
+msbuild *.sln
