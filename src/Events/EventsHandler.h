@@ -256,8 +256,7 @@ public:
 };
 
 #include <iostream>
-#include <dirent.h>
-#include <dlfcn.h>
+ 
 
 namespace ModulesLoaderUtils {
 	bool hasEnding(std::string const &fullString, std::string const &ending);
@@ -274,18 +273,21 @@ void module_create_event_global(void* ptr, char* name, uint8_t* data, long long 
 void module_create_event_self_and_global(void* ptr, char* name, uint8_t* data, long long int msTime);
 uint8_t* module_call_function(void* eventGeneratorPtr, char* name, uint8_t* data, char* serverName, void* serverPtr, uint8_t** memPtr);
 
-#ifdef __WIN32__
-#include <windows.h>
+#ifdef _WIN32 
+#include <windows.h> 
+#else
+#include <dirent.h>
+#include <dlfcn.h>
 #endif
 
 class ModulesLoader {
 public:
 	void execute() {
-#ifdef __WIN32__
+#ifdef _WIN32 
 		HANDLE hFind;
 		WIN32_FIND_DATA data;
 
-		hFind = FindFirstFile("./modules/", &data);
+		hFind = FindFirstFile("./modules/*", &data);
 		if (hFind != INVALID_HANDLE_VALUE) {
 			do {
 				if (ModulesLoaderUtils::hasEnding(data.cFileName, ".dll")) {
@@ -304,7 +306,7 @@ public:
 					int moduleVer = moduleVerFunction();
 					if (moduleVer == MODULE_API_VERSION) {
 						std::cout << "Loading module " << data.cFileName << "..." << std::endl;
-						((void (*)(void *, void *, void *, void *, void *, void*, void*)) dlsym(handle, "ModuleExecuteSetup"))((void*)moduleRegisterEvent, (void*)moduleRegisterEventGuard, (void*)moduleRegisterFunction, (void*)module_create_event_self, (void*)module_create_event_global, (void*)module_create_event_self_and_global, (void*)module_call_function);
+						((void (*)(void *, void *, void *, void *, void *, void*, void*)) GetProcAddress(handle, "ModuleExecuteSetup"))((void*)moduleRegisterEvent, (void*)moduleRegisterEventGuard, (void*)moduleRegisterFunction, (void*)module_create_event_self, (void*)module_create_event_global, (void*)module_create_event_self_and_global, (void*)module_call_function);
 					} else {
 						std::cout << "Module " << data.cFileName << " (" << moduleVer <<") have different API version than server (" << MODULE_API_VERSION << ")." << std::endl;
 					}
