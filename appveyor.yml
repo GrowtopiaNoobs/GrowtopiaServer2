@@ -8,3 +8,10 @@ build_script:
 artifacts:
 - path: bin
   name: GrowtopiaServer
+
+deploy:
+- provider: GitHub
+  description: GrowtopiaServer CI Build
+  auth_token:
+    secure: 5OeKL0BpXE39SdxcoJ6mZH7EcELGBCnKLHavhELhYtQxuVmt9ZnQu5GzsAOh1rM+
+  artifact: bin
