@@ -2,15 +2,9 @@ version: 1.0.{build}
 image:
 - ubuntu1804
 
-for:
--
-  matrix:
-    only:
-      - image: ubuntu1804
+build_script:
+- sh build.sh
 
-  build_script:
-  - sh build.sh
-
-  artifacts:
-  - path: bin
-    name: GrowtopiaServer
+artifacts:
+- path: bin
+  name: GrowtopiaServer
