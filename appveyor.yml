@@ -4,22 +4,21 @@ image:
 - Visual Studio 2019
 
 for:
--
-  matrix:
-    only:
-      - image: ubuntu1804
+  -
+    matrix:
+      only:
+        - image: ubuntu1804
 
-  build_script:
-  - sh build.sh
+    build_script:
+    - sh build.sh
 
-for:
--
-  matrix:
-    only:
-      - image: Visual Studio 2019
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2019
 
-  build_script:
-  - build.bat
+    build_script:
+    - build.bat
 
 artifacts:
 - path: bin
