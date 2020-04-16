@@ -16,7 +16,7 @@
 
 #pragma once
 
-#define X (this->events.currentDataPtr)
+#define _X_ (this->events.currentDataPtr)
 
 #include <map>
 #include <vector>
@@ -58,7 +58,7 @@ public:
 		data->serverUrl = name;
 		data->serverPort = port;
 		setServerData((uint8_t*)data);
-		EventPack pack(X);
+		EventPack pack(_X_);
 		events.create_event_self("__MallocServer", pack);
 		OnPeriodicEvent();
 		*events.currentDataPtr = tmp;

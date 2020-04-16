@@ -187,12 +187,12 @@ void Server::OnConnect(Peer peer) {
 	uint8_t* tmp = *events.currentDataPtr;
 	std::string id = peer.getUID();
 	{
-		EventPack pack(X);
+		EventPack pack(_X_);
 		pack["peer"] = peer.getUID();
 		events.create_event_self("__MallocPeer", pack);
 	}
 	{
-		EventPack pack(X);
+		EventPack pack(_X_);
 		pack["peer"] = peer.getUID();
 		events.create_event_self("OnPlayerConnect", pack);
 	}
@@ -200,14 +200,14 @@ void Server::OnConnect(Peer peer) {
 }
 
 void Server::OnPlayerActionPacket(Peer peer, std::string data) {
-	EventPack pack(X);
+	EventPack pack(_X_);
 	pack["peer"] = peer.getUID();
 	pack["data"] = data;
 	events.create_event_self("OnPlayerActionPacket", pack);
 }
 
 void Server::OnServerActionPacket(Peer peer, std::string data) {
-	EventPack pack(X);
+	EventPack pack(_X_);
 	pack["peer"] = peer.getUID();
 	pack["data"] = data;
 	events.create_event_self("OnServerActionPacket", pack);
@@ -215,7 +215,7 @@ void Server::OnServerActionPacket(Peer peer, std::string data) {
 
 void Server::OnTankPacket(Peer peer, TankPacketStruct data, uint8_t* additionalData, uint32_t additionalDataSize) {
 	{
-		EventPack pack(X);
+		EventPack pack(_X_);
 		pack["peer"] = peer.getUID();
 		pack["packetType"] = (int)data.packetType;
 		pack["netID"] = (int)data.netID;
@@ -236,7 +236,7 @@ void Server::OnTankPacket(Peer peer, TankPacketStruct data, uint8_t* additionalD
 }
 
 void Server::OnUnknownPacket(Peer peer, int type) {
-	EventPack pack(X);
+	EventPack pack(_X_);
 	pack["text"] = "Please implement packet type: " + std::to_string(type);
 	events.create_event_self("ConsoleLog", pack);
 }
@@ -249,7 +249,7 @@ void Server::OnRecievedPacket(Peer peer, uint8_t* data, uint32_t dataLen) {
 
 void Server::OnDisconnect(Peer peer) {
 	uint8_t* tmp = *events.currentDataPtr;
-	EventPack pack(X);
+	EventPack pack(_X_);
 	pack["peer"] = peer.getUID();
 	events.create_event_self("OnPlayerDisconnect", pack);
 	*events.currentDataPtr = tmp;
