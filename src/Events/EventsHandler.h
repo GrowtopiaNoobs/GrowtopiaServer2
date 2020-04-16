@@ -274,7 +274,7 @@ void module_create_event_self_and_global(void* ptr, char* name, uint8_t* data, l
 uint8_t* module_call_function(void* eventGeneratorPtr, char* name, uint8_t* data, char* serverName, void* serverPtr, uint8_t** memPtr);
 
 #ifdef _WIN32 
-//#include <windows.h> 
+#include <windows.h> 
 #else
 #include <dirent.h>
 #include <dlfcn.h>
@@ -293,7 +293,7 @@ public:
 				if (ModulesLoaderUtils::hasEnding(data.cFileName, ".dll")) {
 					std::string totalPath = "./modules/";
 					totalPath += data.cFileName;
-					HINSTANCE handle = LoadLibrary(totalPath);
+					HINSTANCE handle = LoadLibrary(totalPath.c_str());
 					if(handle == NULL) {
 						std::cout << "DLL open error: " << GetLastError() << std::endl;
 						continue;

@@ -40,20 +40,20 @@ class EventPack;
 class EventPackData {
 private:
 	std::string name;
-	std::vector<__uint8_t> data;
+	std::vector<uint8_t> data;
 
 	template <typename T>
 	void push_back(T item, unsigned int *pushed_size = NULL) {
 		if(pushed_size) *pushed_size += sizeof(item);
 		for(int i=0; i<sizeof(item); i++) {
-			data.push_back(*(((__uint8_t*)&item)+i));
+			data.push_back(*(((uint8_t*)&item)+i));
 		}
 	}
 
 	template <typename T>
 	void push_back(T *item, unsigned int size) {
 		for(int i=0; i<size; i++) {
-			data.push_back(*(((__uint8_t*)item)+i));
+			data.push_back(*(((uint8_t*)item)+i));
 		}
 	}
 
@@ -83,7 +83,7 @@ public:
 	void operator=(EventPack arg);
 	void operator=(std::vector<EventPack> arg);
 
-	std::vector<__uint8_t> getData() {
+	std::vector<uint8_t> getData() {
 		return data;
 	}
 
@@ -103,15 +103,15 @@ public:
 		return false;
 	}
 
-	__uint8_t* serialize(int* size = NULL) {
+	uint8_t* serialize(int* size = NULL) {
 		int s = 0;
 		for(EventPackData& pack: data) {
 			s += pack.getData().size();
 		}
 		if(size) *size = s + sizeof(int);
-		__uint8_t* ret = *ptr;
+		uint8_t* ret = *ptr;
 		*ptr += s + sizeof(int);
-		__uint8_t* ptr = ret + sizeof(int);
+		uint8_t* ptr = ret + sizeof(int);
 		memcpy(ret, &s, sizeof(int));
 		for(EventPackData& pack: data) {
 			int dataSize = pack.getData().size();
