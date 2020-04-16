@@ -23,16 +23,16 @@
 #include <memory>
 
 enum EventPackDataType : short {
-	INTEGER,
-	VECTOR_INTEGER,
-	LONG_INTEGER,
-	VECTOR_LONG_INTEGER,
-	FLOAT,
-	VECTOR_FLOAT,
-	STRING,
-	VECTOR_STRING,
-	EVENT_PACK,
-	VECTOR_EVENT_PACK
+	INTEGER_T,
+	VECTOR_INTEGER_T,
+	LONG_INTEGER_T,
+	VECTOR_LONG_INTEGER_T,
+	FLOAT_T,
+	VECTOR_FLOAT_T,
+	STRING_T,
+	VECTOR_STRING_T,
+	EVENT_PACK_T,
+	VECTOR_EVENT_PACK_T
 };
 
 class EventPack;
@@ -174,13 +174,13 @@ private:
 
 public:
 	static void resolve_value(uint8_t* ptr, int& ret) {
-		if(*(short*)ptr!=EventPackDataType::INTEGER) throw;
+		if(*(short*)ptr!=EventPackDataType::INTEGER_T) throw;
 		ptr+=sizeof(short)+sizeof(int);
 		ret = *(int*)ptr;
 	}
 
 	static void resolve_value(uint8_t* ptr, std::vector<int>& ret) {
-		if(*(short*)ptr!=EventPackDataType::VECTOR_INTEGER) throw;
+		if(*(short*)ptr!=EventPackDataType::VECTOR_INTEGER_T) throw;
 		ptr+=sizeof(short);
 		unsigned int var_count = (*(unsigned int*)ptr) >> 2;
 		ptr+=sizeof(int);
@@ -191,13 +191,13 @@ public:
 	}
 
 	static void resolve_value(uint8_t* ptr, unsigned int& ret) {
-		if(*(short*)ptr!=EventPackDataType::INTEGER) throw;
+		if(*(short*)ptr!=EventPackDataType::INTEGER_T) throw;
 		ptr+=sizeof(short)+sizeof(int);
 		ret = *(int*)ptr;
 	}
 
 	static void resolve_value(uint8_t* ptr, std::vector<unsigned int>& ret) {
-		if(*(short*)ptr!=EventPackDataType::VECTOR_INTEGER) throw;
+		if(*(short*)ptr!=EventPackDataType::VECTOR_INTEGER_T) throw;
 		ptr+=sizeof(short);
 		unsigned int var_count = (*(unsigned int*)ptr) >> 2;
 		ptr+=sizeof(int);
@@ -208,13 +208,13 @@ public:
 	}
 
 	static void resolve_value(uint8_t* ptr, long long int& ret) {
-		if(*(short*)ptr!=EventPackDataType::LONG_INTEGER) throw;
+		if(*(short*)ptr!=EventPackDataType::LONG_INTEGER_T) throw;
 		ptr+=sizeof(short)+sizeof(int);
 		ret = *(long long int*)ptr;
 	}
 
 	static void resolve_value(uint8_t* ptr, std::vector<long long int>& ret) {
-		if(*(short*)ptr!=EventPackDataType::VECTOR_LONG_INTEGER) throw;
+		if(*(short*)ptr!=EventPackDataType::VECTOR_LONG_INTEGER_T) throw;
 		ptr+=sizeof(short);
 		unsigned int var_count = (*(unsigned int*)ptr) >> 3;
 		ptr+=sizeof(int);
@@ -225,13 +225,13 @@ public:
 	}
 
 	static void resolve_value(uint8_t* ptr, float& ret) {
-		if(*(short*)ptr!=EventPackDataType::FLOAT) throw;
+		if(*(short*)ptr!=EventPackDataType::FLOAT_T) throw;
 		ptr+=sizeof(short)+sizeof(int);
 		ret = *(float*)ptr;
 	}
 
 	static void resolve_value(uint8_t* ptr, std::vector<float>& ret) {
-		if(*(short*)ptr!=EventPackDataType::VECTOR_FLOAT) throw;
+		if(*(short*)ptr!=EventPackDataType::VECTOR_FLOAT_T) throw;
 		ptr+=sizeof(short);
 		unsigned int var_count = (*(unsigned int*)ptr) >> 2;
 		ptr+=sizeof(int);
@@ -242,7 +242,7 @@ public:
 	}
 
 	static void resolve_value(uint8_t* ptr, std::string& ret) {
-		if(*(short*)ptr!=EventPackDataType::STRING) throw;
+		if(*(short*)ptr!=EventPackDataType::STRING_T) throw;
 		ptr+=sizeof(short);
 		int strLen = *(int*)ptr;
 		ptr+=sizeof(int);
@@ -253,7 +253,7 @@ public:
 	}
 
 	static void resolve_value(uint8_t* ptr, std::vector<std::string>& ret) {
-		if(*(short*)ptr!=EventPackDataType::VECTOR_STRING) throw;
+		if(*(short*)ptr!=EventPackDataType::VECTOR_STRING_T) throw;
 		ptr+=sizeof(short);
 		int data_size = *(int *) ptr;
 		ptr += sizeof(int);
@@ -333,28 +333,28 @@ public:
 			uint32_t dataSize = *(int*)(ptr + sizeof(EventPackDataType));
 			std::string res2 = name + " (type: ";
 			switch(type) {
-				case EventPackDataType::INTEGER: res2 += "INTEGER"; break;
-				case EventPackDataType::VECTOR_INTEGER: res2 += "VECTOR_INTEGER"; break;
-				case EventPackDataType::LONG_INTEGER: res2 += "LONG_INTEGER"; break;
-				case EventPackDataType::VECTOR_LONG_INTEGER: res2 += "VECTOR_LONG_INTEGER"; break;
-				case EventPackDataType::FLOAT: res2 += "FLOAT"; break;
-				case EventPackDataType::VECTOR_FLOAT: res2 += "VECTOR_FLOAT"; break;
-				case EventPackDataType::STRING: res2 += "STRING"; break;
-				case EventPackDataType::VECTOR_STRING: res2 += "VECTOR_STRING"; break;
-				case EventPackDataType::EVENT_PACK: res2 += "EVENT_PACK"; break;
-				case EventPackDataType::VECTOR_EVENT_PACK: res2 += "VECTOR_EVENT_PACK"; break;
+				case EventPackDataType::INTEGER_T: res2 += "INTEGER_T"; break;
+				case EventPackDataType::VECTOR_INTEGER_T: res2 += "VECTOR_INTEGER_T"; break;
+				case EventPackDataType::LONG_INTEGER_T: res2 += "LONG_INTEGER_T"; break;
+				case EventPackDataType::VECTOR_LONG_INTEGER_T: res2 += "VECTOR_LONG_INTEGER_T"; break;
+				case EventPackDataType::FLOAT_T: res2 += "FLOAT_T"; break;
+				case EventPackDataType::VECTOR_FLOAT_T: res2 += "VECTOR_FLOAT_T"; break;
+				case EventPackDataType::STRING_T: res2 += "STRING_T"; break;
+				case EventPackDataType::VECTOR_STRING_T: res2 += "VECTOR_STRING_T"; break;
+				case EventPackDataType::EVENT_PACK_T: res2 += "EVENT_PACK_T"; break;
+				case EventPackDataType::VECTOR_EVENT_PACK_T: res2 += "VECTOR_EVENT_PACK_T"; break;
 				default: res2 += "UNKNOWN"; break;
 			}
 			res2 += ", size: " + std::to_string(dataSize) + " bytes):\n";
 			std::string res = "";
 			switch(type) {
-				case EventPackDataType::INTEGER: {
+				case EventPackDataType::INTEGER_T: {
 					int val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					res += std::to_string(val) + "\n";
 					break;
 				}
-				case EventPackDataType::VECTOR_INTEGER: {
+				case EventPackDataType::VECTOR_INTEGER_T: {
 					std::vector<int> val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					for(int i=0; i<val.size(); i++) {
@@ -362,13 +362,13 @@ public:
 					}
 					break;
 				}
-				case EventPackDataType::LONG_INTEGER: {
+				case EventPackDataType::LONG_INTEGER_T: {
 					long long int val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					res += std::to_string(val) + "\n";
 					break;
 				}
-				case EventPackDataType::VECTOR_LONG_INTEGER: {
+				case EventPackDataType::VECTOR_LONG_INTEGER_T: {
 					std::vector<long long int> val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					for(int i=0; i<val.size(); i++) {
@@ -376,13 +376,13 @@ public:
 					}
 					break;
 				}
-				case EventPackDataType::FLOAT: {
+				case EventPackDataType::FLOAT_T: {
 					float val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					res += std::to_string(val) + "\n";
 					break;
 				}
-				case EventPackDataType::VECTOR_FLOAT: {
+				case EventPackDataType::VECTOR_FLOAT_T: {
 					std::vector<float> val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					for(int i=0; i<val.size(); i++) {
@@ -390,13 +390,13 @@ public:
 					}
 					break;
 				}
-				case EventPackDataType::STRING: {
+				case EventPackDataType::STRING_T: {
 					std::string val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					res += val + "\n";
 					break;
 				}
-				case EventPackDataType::VECTOR_STRING: {
+				case EventPackDataType::VECTOR_STRING_T: {
 					std::vector<std::string> val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					for(int i=0; i<val.size(); i++) {
@@ -404,13 +404,13 @@ public:
 					}
 					break;
 				}
-				case EventPackDataType::EVENT_PACK: {
+				case EventPackDataType::EVENT_PACK_T: {
 					EventUnpack val(NULL);
 					EventUnpackRequest::resolve_value(ptr, val);
 					res += val.to_string() + "\n";
 					break;
 				}
-				case EventPackDataType::VECTOR_EVENT_PACK: {
+				case EventPackDataType::VECTOR_EVENT_PACK_T: {
 					std::vector<EventUnpack> val;
 					EventUnpackRequest::resolve_value(ptr, val);
 					for(int i=0; i<val.size(); i++) {

@@ -18,13 +18,13 @@
 
 
 void EventPackData::operator=(int arg) {
-	int sizePos = push_header(EventPackDataType::INTEGER);
+	int sizePos = push_header(EventPackDataType::INTEGER_T);
 	this->push_back(arg);
 	add_data_size(sizePos, sizeof(int));
 }
 
 void EventPackData::operator=(std::vector<int> arg) {
-	int sizePos = push_header(EventPackDataType::VECTOR_INTEGER);
+	int sizePos = push_header(EventPackDataType::VECTOR_INTEGER_T);
 	for(int val: arg) {
 		this->push_back(val);
 	}
@@ -33,13 +33,13 @@ void EventPackData::operator=(std::vector<int> arg) {
 
 
 void EventPackData::operator=(long long int arg) {
-	int sizePos = push_header(EventPackDataType::LONG_INTEGER);
+	int sizePos = push_header(EventPackDataType::LONG_INTEGER_T);
 	this->push_back(arg);
 	add_data_size(sizePos, sizeof(long long int));
 }
 
 void EventPackData::operator=(std::vector<long long int> arg) {
-	int sizePos = push_header(EventPackDataType::VECTOR_LONG_INTEGER);
+	int sizePos = push_header(EventPackDataType::VECTOR_LONG_INTEGER_T);
 	for(long long int val: arg) {
 		this->push_back(val);
 	}
@@ -47,13 +47,13 @@ void EventPackData::operator=(std::vector<long long int> arg) {
 }
 
 void EventPackData::operator=(float arg) {
-	int sizePos = push_header(EventPackDataType::FLOAT);
+	int sizePos = push_header(EventPackDataType::FLOAT_T);
 	this->push_back(arg);
 	add_data_size(sizePos, sizeof(int));
 }
 
 void EventPackData::operator=(std::vector<float> arg) {
-	int sizePos = push_header(EventPackDataType::VECTOR_FLOAT);
+	int sizePos = push_header(EventPackDataType::VECTOR_FLOAT_T);
 	for(int val: arg) {
 		this->push_back(val);
 	}
@@ -61,13 +61,13 @@ void EventPackData::operator=(std::vector<float> arg) {
 }
 
 void EventPackData::operator=(std::string arg) {
-	int sizePos = push_header(EventPackDataType::STRING);
+	int sizePos = push_header(EventPackDataType::STRING_T);
 	this->push_back(arg.c_str(), arg.length());
 	add_data_size(sizePos, arg.length());
 }
 
 void EventPackData::operator=(std::vector<std::string> arg) {
-	int sizePos = push_header(EventPackDataType::VECTOR_STRING);
+	int sizePos = push_header(EventPackDataType::VECTOR_STRING_T);
 	int length_final = 0;
 	for(std::string val: arg) {
 		int len = val.length();
@@ -79,7 +79,7 @@ void EventPackData::operator=(std::vector<std::string> arg) {
 }
 
 void EventPackData::operator=(EventPack arg) {
-	int sizePos = push_header(EventPackDataType::EVENT_PACK);
+	int sizePos = push_header(EventPackDataType::EVENT_PACK_T);
 	int dataSize;
 	uint8_t *data = arg.serialize(&dataSize);
 	this->push_back(data, dataSize);
@@ -87,7 +87,7 @@ void EventPackData::operator=(EventPack arg) {
 }
 
 void EventPackData::operator=(std::vector<EventPack> arg) {
-	int sizePos = push_header(EventPackDataType::VECTOR_EVENT_PACK);
+	int sizePos = push_header(EventPackDataType::VECTOR_EVENT_PACK_T);
 	int length_final = 0;
 	for(EventPack& pack: arg) {
 		int dataSize;
@@ -100,13 +100,13 @@ void EventPackData::operator=(std::vector<EventPack> arg) {
 }
 
 void EventUnpackRequest::resolve_value(uint8_t* ptr, EventUnpack& ret) {
-	if(*(short*)ptr!=EventPackDataType::EVENT_PACK) throw;
+	if(*(short*)ptr!=EventPackDataType::EVENT_PACK_T) throw;
 	ptr+=sizeof(short)+sizeof(int);
 	ret = EventUnpack(ptr);
 }
 
 void EventUnpackRequest::resolve_value(uint8_t* ptr, std::vector<EventUnpack>& ret) {
-	if(*(short*)ptr!=EventPackDataType::VECTOR_EVENT_PACK) throw;
+	if(*(short*)ptr!=EventPackDataType::VECTOR_EVENT_PACK_T) throw;
 	ptr+=sizeof(short);
 	int size=*(int*)ptr;
 	ptr+=sizeof(int);

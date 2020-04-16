@@ -20,7 +20,7 @@ EVENT(SendLoginRequestPacket) {
 	try {
 		LoginRequestPacket p;
 		auto peer = pack["peer"];
-		if(peer.getType() == EventPackDataType::STRING) {
+		if(peer.getType() == EventPackDataType::STRING_T) {
 			p.send(server.getPeer(peer));
 		} else {
 			std::vector<std::string> peers = peer;
@@ -82,7 +82,7 @@ EVENT(SendTankPacket) {
 			p.setAdditionalData((uint8_t*)data.c_str(), data.length());
 		} catch(...) {}
 		auto peer = pack["peer"];
-		if(peer.getType() == EventPackDataType::STRING) {
+		if(peer.getType() == EventPackDataType::STRING_T) {
 			p.send(server.getPeer(peer));
 		} else {
 			std::vector<std::string> peers = peer;
@@ -104,15 +104,15 @@ EVENT(SendVariantPacket) {
 			for(int i=1; ; i++) {
 				EventUnpackRequest item = pack[std::to_string(i)];
 				switch(item.getType()) {
-					case INTEGER: {
+					case INTEGER_T: {
 						p.appendIntx(item);
 						break;
 					}
-					case FLOAT: {
+					case FLOAT_T: {
 						p.appendFloat(item);
 						break;
 					}
-					case VECTOR_FLOAT: {
+					case VECTOR_FLOAT_T: {
 						std::vector<float> val = item;
 						switch(val.size()) {
 							case 1: {
@@ -133,7 +133,7 @@ EVENT(SendVariantPacket) {
 						}
 						break;
 					}
-					case STRING: {
+					case STRING_T: {
 						p.appendString(item);
 						break;
 					}
@@ -147,7 +147,7 @@ EVENT(SendVariantPacket) {
 
 		}
 		auto peer = pack["peer"];
-		if(peer.getType() == EventPackDataType::STRING) {
+		if(peer.getType() == EventPackDataType::STRING_T) {
 			p.send(server.getPeer(pack["peer"]));
 		} else {
 			std::vector<std::string> peers = peer;
@@ -163,7 +163,7 @@ EVENT(SendVariantPacket) {
 EVENT(SendDisconnect) {
 	try {
 		auto peer = pack["peer"];
-		if(peer.getType() == EventPackDataType::STRING) {
+		if(peer.getType() == EventPackDataType::STRING_T) {
 			server.getPeer(peer).requestDisconnect();
 		} else {
 			std::vector<std::string> peers = peer;
