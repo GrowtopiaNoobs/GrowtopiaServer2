@@ -459,7 +459,7 @@ public:
 
 #include "../ENetWrapper/ENetServerRemote.hpp"
 
-typedef void (*EventHandler)(uint8_t *pack, char* serverName, void* serverPtr, void* current_event_caller, uint8_t** currentDataPtr);
+typedef void (*EventHandler)(uint8_t* pack, char* serverName, void* serverPtr, void* current_event_caller, uint8_t** currentDataPtr);
 typedef char (*GuardHandler)(uint8_t* pack, char* serverName, void* serverPtr, void* current_event_caller, uint8_t** currentDataPtr);
 typedef uint8_t* (*FucntionHandler)(uint8_t* pack, char* serverName, void* serverPtr, void* current_event_caller, uint8_t** currentDataPtr);
 
@@ -468,6 +468,12 @@ typedef uint8_t* (*FucntionHandler)(uint8_t* pack, char* serverName, void* serve
 				fname ## _WRAPPER(EventUnpack(data), ENetServerRemote(serverName, (ENetHost*)serverPtr), current_event_caller, __currentDataPtr); \
 			} \
 			void fname ## _WRAPPER(EventUnpack pack, ENetServerRemote server, void* __current_event_caller, uint8_t** __currentDataPtr)
+
+#define GUARD(fname)	char fname ## _WRAPPER(EventUnpack pack, ENetServerRemote server, void* __current_event_caller, uint8_t** __currentDataPtr); \
+			char fname(uint8_t* data, char* serverName, void* serverPtr, void* current_event_caller, uint8_t** __currentDataPtr) {\
+				return fname ## _WRAPPER(EventUnpack(data), ENetServerRemote(serverName, (ENetHost*)serverPtr), current_event_caller, __currentDataPtr); \
+			} \
+			char fname ## _WRAPPER(EventUnpack pack, ENetServerRemote server, void* __current_event_caller, uint8_t** __currentDataPtr)
 
 #define FUNCTION(fname)	EventUnpack fname ## _WRAPPER(EventUnpack pack, ENetServerRemote server, void* __current_event_caller, uint8_t** __currentDataPtr); \
 			uint8_t* fname(uint8_t* data, char* serverName, void* serverPtr, void* current_event_caller, uint8_t** __currentDataPtr) {\
