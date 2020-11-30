@@ -53,16 +53,32 @@ public:
 		}
 	}
 
+	inline int serverIDtoInt(const char* name) {
+		int ret = 0;
+		uint32_t inc = 0;
+		while(*name) {
+			uint8_t retTmp = *(name++);
+			if(retTmp>'9') {
+				ret += ((uint32_t)(retTmp-'A'))<<inc;
+			} else {
+				ret += ((uint32_t)(retTmp-'0'))<<inc;
+			}
+			inc+=4;
+		}
+		return ret;
+	}
+
 	void execute(const std::string& key, EventUnpack& pack, ENetServer& server, void* pool_ptr, uint8_t** currentDataPtr) {
 		auto handlers = map.find(key);
-		if(handlers == map.end()) return;
+		auto handlersAny = map.find("*");
+		if(handlers == map.end() && handlersAny == map.end()) return;
 		bool canBeLaunched = true;
-		char* serverID = (char*)server.getServerID().c_str();
 		auto serverPtr = server.getServerPtr();
 		uint8_t* tmp = *currentDataPtr;
+		if(handlers != map.end())
 		for(GuardHandler handler: handlers->second.guards) {
 			try {
-				bool x = (*handler)(pack.getData(), serverID, serverPtr, pool_ptr, currentDataPtr);
+				bool x = (*handler)(pack.getData(), (char*)server.getServerID().c_str(), serverPtr, pool_ptr, currentDataPtr);
 				if(!x) {
 					canBeLaunched = false;
 				}
@@ -70,13 +86,43 @@ public:
 				std::cout << "Uncought exception in event-guard " << handlers->first << std::endl;
 			}
 		}
+		if(handlersAny != map.end() && !handlersAny->second.guards.empty()) {
+			EventPack anyPack(currentDataPtr);
+			anyPack["name"] = key;
+			anyPack["data"] = (EventUnpack)pack;
+			EventUnpack anyUnpack(anyPack.serialize());
+			for(GuardHandler handler: handlersAny->second.guards) {
+				try {
+					bool x = (*handler)(anyUnpack.getData(), (char*)server.getServerID().c_str(), serverPtr, pool_ptr, currentDataPtr);
+					if(!x) {
+						canBeLaunched = false;
+					}
+				} catch(...) {
+					std::cout << "Uncought exception in event-guard " << handlersAny->first << std::endl;
+				}
+			}
+		}
 		*currentDataPtr = tmp;
 		if(canBeLaunched) {
+			if(handlers != map.end())
 			for (EventHandler handler: handlers->second.events) {
 				try {
-					(*handler)(pack.getData(), serverID, serverPtr, pool_ptr, currentDataPtr);
+					(*handler)(pack.getData(), (char*)server.getServerID().c_str(), serverPtr, pool_ptr, currentDataPtr);
 				} catch (...) {
 					std::cout << "Uncought exception in event " << handlers->first << std::endl;
+				}
+			}
+			if(handlersAny != map.end() && !handlersAny->second.events.empty()) {
+				EventPack anyPack(currentDataPtr);
+				anyPack["name"] = key;
+				anyPack["data"] = (EventUnpack)pack;
+				EventUnpack anyUnpack(anyPack.serialize());
+				for (EventHandler handler: handlersAny->second.events) {
+					try {
+						(*handler)(anyUnpack.getData(), (char*)server.getServerID().c_str(), serverPtr, pool_ptr, currentDataPtr);
+					} catch (...) {
+						std::cout << "Uncought exception in event " << handlersAny->first << std::endl;
+					}
 				}
 			}
 		}
@@ -101,10 +147,22 @@ public:
 	EventUnpack execute(const std::string& key, uint8_t* pack, char* serverName, void* serverPtr, void* pool_ptr, uint8_t** currentDataPtr) {
 		uint8_t* ret;
 		auto mapFuncs = map.find(key);
-		if(mapFuncs == map.end()) return EventUnpack(NULL);
+		auto anyFuncs = map.find("*");
+		if(mapFuncs == map.end() && anyFuncs == map.end()) return EventUnpack(NULL);
+		if(mapFuncs != map.end())
 		for(FucntionHandler handler: mapFuncs->second) {
 			ret = (*handler)(pack, serverName, serverPtr, pool_ptr, currentDataPtr);
 			if(!EventUnpack(ret).isEmpty()) return EventUnpack(ret);
+		}
+		if(anyFuncs != map.end()) {
+			EventPack anyPack(currentDataPtr);
+			anyPack["name"] = key;
+			anyPack["data"] = (EventUnpack) pack;
+			EventUnpack anyUnpack(anyPack.serialize());
+			for (FucntionHandler handler: anyFuncs->second) {
+				ret = (*handler)(anyUnpack.getData(), serverName, serverPtr, pool_ptr, currentDataPtr);
+				if (!EventUnpack(ret).isEmpty()) return EventUnpack(ret);
+			}
 		}
 		return EventUnpack(ret);
 	}
@@ -136,9 +194,15 @@ class EventsHandler {
 	std::list<Event>& events;
 public:
 	void create_event(std::string name, EventUnpack data, long long int msTime=0) {
-		int size = (*(int*)data.getData()) + 4;
-		void* data_copy = malloc(size);
-		memcpy(data_copy, data.getData(), size);
+		void* data_copy;
+		if(data.isEmpty()) {
+			data_copy = malloc(4);
+			*(int*)data_copy = 0;
+		} else {
+			int size = (*(int*)data.getData()) + 4;
+			data_copy = malloc(size);
+			memcpy(data_copy, data.getData(), size);
+		}
 		Event event(std::move(name), (uint8_t*)data_copy);
 		if(msTime!=0) {
 			event.time = std::chrono::duration_cast<std::chrono::milliseconds>(

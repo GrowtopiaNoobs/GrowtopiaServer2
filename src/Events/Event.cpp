@@ -99,10 +99,28 @@ void EventPackData::operator=(std::vector<EventPack> arg) {
 	add_data_size(sizePos, length_final);
 }
 
+void EventPackData::operator=(EventUnpack arg) {
+	int sizePos = push_header(EventPackDataType::EVENT_PACK_T);
+	int dataSize;
+	if(arg.getData() == NULL) {
+		dataSize = 0;
+	} else {
+		dataSize =  *(int*)arg.getData();
+	}
+	uint8_t *data = arg.getData();
+	this->push_back(data, dataSize+sizeof(int));
+	add_data_size(sizePos, dataSize+sizeof(int));
+}
+
 void EventUnpackRequest::resolve_value(uint8_t* ptr, EventUnpack& ret) {
 	if(*(short*)ptr!=EventPackDataType::EVENT_PACK_T) throw;
-	ptr+=sizeof(short)+sizeof(int);
-	ret = EventUnpack(ptr);
+	ptr+=sizeof(short);
+	if(*(int*)ptr == 0) {
+		ret = EventUnpack(NULL);
+	} else {
+		ptr+=sizeof(int);
+		ret = EventUnpack(ptr);
+	}
 }
 
 void EventUnpackRequest::resolve_value(uint8_t* ptr, std::vector<EventUnpack>& ret) {

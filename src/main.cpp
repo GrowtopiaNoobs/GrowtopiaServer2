@@ -56,8 +56,8 @@ int main () {
 	const int serverBeginPort = 17091;
 	for(Server* server: servers) {
 		try {
-		server->init(serverBeginPort + serverOffset, 128, "127.0.0.1");
-		serverOffset++;
+			server->init(serverBeginPort + serverOffset, 128, "127.0.0.1");
+			serverOffset++;
 		} catch(...) {
 			std::cout << "Error while initializing server " << serverOffset << ", port " << serverBeginPort + serverOffset << " is busy..." << std::endl;
 			return 1;

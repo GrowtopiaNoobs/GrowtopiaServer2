@@ -36,6 +36,7 @@ enum EventPackDataType : short {
 };
 
 class EventPack;
+class EventUnpack;
 
 class EventPackData {
 private:
@@ -82,6 +83,7 @@ public:
 	void operator=(std::vector<std::string> arg);
 	void operator=(EventPack arg);
 	void operator=(std::vector<EventPack> arg);
+	void operator=(EventUnpack arg);
 
 	std::vector<uint8_t> getData() {
 		return data;
@@ -310,7 +312,7 @@ public:
 
 	bool isEmpty() {
 		if(data == NULL) return true;
-		if(*(int*)data>4) return true;
+		if(*(int*)data<4) return true;
 		return false;
 	}
 
@@ -453,7 +455,9 @@ public:
 		return to_string();
 	}
 
+	EventUnpack(): data(NULL) {}
 	EventUnpack(uint8_t* data) : data(data) {}
+	EventUnpack(const EventUnpack& pack) : data(pack.data) {}
 	EventUnpack(EventPack pack) : data(pack.serialize(NULL)) {}
 };
 
